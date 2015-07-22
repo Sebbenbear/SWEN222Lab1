@@ -3,11 +3,17 @@ import java.awt.Graphics;
 import java.awt.Polygon;
 import java.util.Random;
 
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 
 public class LanderCanvas extends JPanel {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private static final int FUEL_X = 10;
 	private static final int FUEL_Y = 10;
 	private Polygon ground;
@@ -89,6 +95,7 @@ public class LanderCanvas extends JPanel {
 		g.setColor(Color.LIGHT_GRAY);
 		g.translate(x, y);
 		g.fillPolygon(landerXS, landerYS, landerYS.length);
+	
 	}
 
 	/**
@@ -102,7 +109,7 @@ public class LanderCanvas extends JPanel {
 //			g.translate(-13, 50);
 //			g.fillPolygon(new int[] {10, 30, 20}, new int[] {10, 10, 20}, 3);
 			
-			g.translate(1, 40);
+			g.translate(4, 50);
 			g.setColor(Color.orange);
 			int numStars = 40;
 			Random r = new Random();
@@ -122,27 +129,13 @@ public class LanderCanvas extends JPanel {
 	 * @param g
 	 */
 	private void drawFuelGauge(Graphics g) {
-		g.setColor(Color.black);
-		g.translate(FUEL_X/2 - 2, FUEL_Y/2);
-		g.drawString(String.format("%d", this.fuel), FUEL_X, FUEL_Y);
+//		g.setColor(Color.black);
+//		g.translate(FUEL_X/2 - 2, FUEL_Y/2);
+//		g.drawString(String.format("%d", this.fuel), FUEL_X, FUEL_Y);
 
 		g.setColor(Color.red);
 		g.translate(FUEL_X, 2*(-FUEL_Y));
 		g.fillRect(0, 0, this.fuel, 2);
-	}
-
-	public void translateY(int amount) {
-		y += amount;
-	}
-
-	public void translateX(int amount){
-		x += amount;
-	}
-
-	public void drawFlame() {
-		// TODO Auto-generated method stub
-		//graphics object
-
 	}
 
 	/**
@@ -152,6 +145,14 @@ public class LanderCanvas extends JPanel {
 	public void setFuel(int fuel) {
 		this.fuel = fuel; 		
 	}
+	
+	public void translateY(int amount) {
+		y += amount;
+	}
+
+	public void translateX(int amount){
+		x += amount;
+	}
 
 	/**
 	 * Returns whether or not the ship intersects with the ground.
@@ -159,6 +160,23 @@ public class LanderCanvas extends JPanel {
 	 */
 	public boolean hitGround() {
 		//return ground.contains();
+		
+		//Variables for simple bounding box
+		int minX = 0;
+		int minY = 0;
+		int maxX = 40;
+		int maxY = 40;
+		
+		String message = "You fell over!";
+		//Check if it was on the flat - both feet are at the same Y? then change the message
+		//if(){
+		//	message = "Congratulations, you landed safely.";
+		//}
+		
+		
+		int r = JOptionPane.showConfirmDialog(this, new JLabel(message ),
+				"Warning!", JOptionPane.YES_NO_CANCEL_OPTION,
+				JOptionPane.WARNING_MESSAGE);
 		return false;
 	}
 

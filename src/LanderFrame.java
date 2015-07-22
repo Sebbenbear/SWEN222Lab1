@@ -4,8 +4,20 @@ import java.awt.event.KeyEvent;
 
 import javax.swing.JFrame;
 
+/**
+ * LanderFrame class that contains the canvas.
+ * @author Pauline Kelly
+ *
+ */
 public class LanderFrame extends javax.swing.JFrame implements java.awt.event.KeyListener {
+	
+	//http://stackoverflow.com/questions/23304775/looping-music-in-java  MUSIC
+	//https://www.youtube.com/watch?v=rf_p3-8fTo0  -- first track
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private LanderCanvas canvas;
 	public static final int OFFSET = 5;
 	public static final int WINDOW_SIZE = 600;
@@ -59,6 +71,7 @@ public class LanderFrame extends javax.swing.JFrame implements java.awt.event.Ke
 	 * Simple model for gravity
 	 * TODO: Could be changes to not use so many fields? Probably not...
 	 */
+	@SuppressWarnings("unused")
 	private void calculatePositionDownwards() {
 		this.vertical_speed = this.vertical_speed + GRAVITY;        
 		this.vertical_speed = this.vertical_speed > TERMINAL_VELOCITY ? this.vertical_speed = TERMINAL_VELOCITY : this.vertical_speed;  //Keep at terminal speed if it's reached
