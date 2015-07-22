@@ -12,7 +12,7 @@ public class Timer extends Thread {
 		while(true) {
 			try {
 				Thread.sleep(100); // 0.1s delay
-				landerFrame.setY(10);
+				landerFrame.fall();
 				landerFrame.repaint(); // repaint the canvas
 			} catch(InterruptedException e) {
 				System.out.println("Timer error: " + e.getMessage());
