@@ -10,7 +10,7 @@ import javax.swing.JFrame;
  *
  */
 public class LanderFrame extends javax.swing.JFrame implements java.awt.event.KeyListener {
-	
+
 	//http://stackoverflow.com/questions/23304775/looping-music-in-java  MUSIC
 	//https://www.youtube.com/watch?v=rf_p3-8fTo0  -- first track
 
@@ -23,12 +23,18 @@ public class LanderFrame extends javax.swing.JFrame implements java.awt.event.Ke
 	public static final int WINDOW_SIZE = 600;
 	public static final int UNIT_FUEL = 1;
 
-	public static final int GRAVITY = 3;
+	public static final float GRAVITY_ACCELERATION = 1;
+	public static final float MAIN_ENGINE_ACCELERATION = 2;
+	public static final float THRUSTER_ACCELERATION = 1;
 	public static final int TERMINAL_VELOCITY = 5;
-	public int vertical_speed = 0;
+
+	public float verticalSpeed = 0;
+	public float horizontalSpeed = 0;
+
+	private float mainEngineAcceleration;
+	private float horizontalAcceleration;
 
 	public int fuel = 100;
-	private int vertical_position;
 
 	public LanderFrame() {
 		super("Moon Lander");
@@ -51,19 +57,30 @@ public class LanderFrame extends javax.swing.JFrame implements java.awt.event.Ke
 	}
 
 	/**
-	 * Changes ships Y position.
+	 * Changes ships position - calculates the physics for moving vertically and horizonatally.
 	 * @param amount
 	 */
 	public void fall(){
-		//calculatePositionDownwards();
-		//canvas.translateY(vertical_position);
+		calculatePositionDownwards();
+		calculatePositionSideways();
+
 		if(!hitGround()){
-			canvas.translateY(GRAVITY);
+			float timeDelta = 1;
+
+			canvas.translateY((int)(this.verticalSpeed * timeDelta));
+			canvas.translateX((int)(this.horizontalSpeed * timeDelta));
 		}
 	}
 
-	private boolean hitGround() {
-		// TODO Auto-generated method stub
+	private void calculatePositionSideways() {
+		float acceleration = horizontalAcceleration;
+
+		float time_delta = 1;
+
+		this.horizontalSpeed = this.horizontalSpeed + acceleration * time_delta; 		
+	}
+
+	boolean hitGround() {
 		return canvas.hitGround();
 	}
 
@@ -71,37 +88,54 @@ public class LanderFrame extends javax.swing.JFrame implements java.awt.event.Ke
 	 * Simple model for gravity
 	 * TODO: Could be changes to not use so many fields? Probably not...
 	 */
-	@SuppressWarnings("unused")
 	private void calculatePositionDownwards() {
-		this.vertical_speed = this.vertical_speed + GRAVITY;        
-		this.vertical_speed = this.vertical_speed > TERMINAL_VELOCITY ? this.vertical_speed = TERMINAL_VELOCITY : this.vertical_speed;  //Keep at terminal speed if it's reached
-		this.vertical_position = this.vertical_position + this.vertical_speed;		
+		float acceleration = GRAVITY_ACCELERATION + mainEngineAcceleration;
+
+		float timeDelta = 1;
+
+		this.verticalSpeed = this.verticalSpeed + acceleration * timeDelta;  
+
+		//		this.vertical_speed = this.vertical_speed > TERMINAL_VELOCITY ? this.vertical_speed = TERMINAL_VELOCITY : this.vertical_speed;  //Keep at terminal speed if it's reached
+		//		this.vertical_position = this.vertical_position + this.vertical_speed;		
 	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
 		int code = e.getKeyCode();
 		if(code == KeyEvent.VK_RIGHT || code == KeyEvent.VK_KP_RIGHT) {
-			canvas.translateX(OFFSET);
+			horizontalAcceleration = THRUSTER_ACCELERATION;
 
 		} else if(code == KeyEvent.VK_LEFT || code == KeyEvent.VK_KP_LEFT) {
-			canvas.translateX(-OFFSET);
+			horizontalAcceleration = -THRUSTER_ACCELERATION;
 		}
 		else if(code == KeyEvent.VK_UP || code == KeyEvent.VK_KP_UP) {
 			if(fuel <= 0){  //If the fuel has been used, do nothing.
+				canvas.setThrusting(false);
+				mainEngineAcceleration = 0;
 				return;
 			}
 			fuel -= UNIT_FUEL;
 			canvas.setFuel(fuel);
 
-			canvas.translateY(-OFFSET);
 			canvas.setThrusting(true);
+			mainEngineAcceleration = -MAIN_ENGINE_ACCELERATION;
 		}		
 	}
 
+	/**
+	 * Resets the acceleration
+	 */
 	@Override
 	public void keyReleased(KeyEvent e) {
-		canvas.setThrusting(false);
+		int code = e.getKeyCode();
+		if(code == KeyEvent.VK_RIGHT || code == KeyEvent.VK_KP_RIGHT ||
+				code == KeyEvent.VK_LEFT || code == KeyEvent.VK_KP_LEFT) {
+			horizontalAcceleration = 0;
+		}
+		else if(code == KeyEvent.VK_UP || code == KeyEvent.VK_KP_UP) {
+			canvas.setThrusting(false);
+			mainEngineAcceleration = 0;
+		}
 	}
 
 	@Override

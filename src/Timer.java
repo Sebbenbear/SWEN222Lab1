@@ -1,3 +1,6 @@
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 
 public class Timer extends Thread {
 
@@ -13,11 +16,22 @@ public class Timer extends Thread {
 			try {
 				Thread.sleep(100); // 0.1s delay
 				landerFrame.fall();
+				if(landerFrame.hitGround()){
+					String message = checkCrashed();
+					int r = JOptionPane.showConfirmDialog(new JLabel(message),
+							"You landed!");
+					return;
+				}
 				landerFrame.repaint(); // repaint the canvas
 			} catch(InterruptedException e) {
 				System.out.println("Timer error: " + e.getMessage());
 			}
 		}
+	}
+
+	private String checkCrashed() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	public static void main(String [] args){

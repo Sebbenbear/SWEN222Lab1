@@ -10,24 +10,33 @@ import javax.swing.JPanel;
 
 public class LanderCanvas extends JPanel {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
+	
 	private static final int FUEL_X = 10;
 	private static final int FUEL_Y = 10;
+	
 	private Polygon ground;
 	private Polygon midGround;
+	
 	private int x = 300;
 	private int y = 10;
 
 	private int fuel = 100;
 	private boolean thrusting = false;
+	
+	private int[] landerXS = {11,13,27,29,30,26,37,40,40,30,30,33,24,
+			21,24,16,19, 16, 7, 0, 0,10,10, 3,14,10};
+	private int[] landerYS = { 5, 0,0, 5, 20,20,35,35,40,40,35,35,20,
+			20,25,25,20,20,35,35,40,40,35,35,20,20};
+	
 
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 	}
 
+	/**
+	 * Paints various features on the canvas.
+	 */
 	@Override
 	public void paint(Graphics g){
 		drawBackground(g);
@@ -47,7 +56,7 @@ public class LanderCanvas extends JPanel {
 		int[] groundYS = {500,450,480,510,350,400,395,480,490,480,480,520,515,520,
 				515,550,400,350,360,400,410,480,455,465,480,500,600,600};
 		
-		int[] midgroundXS = {10 ,40 ,60 ,120,145,170,200,200,220,230,300,310,330,350,
+		int[] midgroundXS = {10 ,40 ,60 ,120,145,170,200,200,220,230,300,310,430,350,
 				360,400,410,435,460,465,500,545,560,575,580,600,600,0};
 		int[] midgroundYS = {500,450,480,510,350,400,395,480,490,480,480,520,515,520,
 				515,550,400,350,360,400,410,480,455,465,480,500,600,600};
@@ -87,11 +96,6 @@ public class LanderCanvas extends JPanel {
 	 * @param g
 	 */
 	private void drawMoonLander(Graphics g) {
-		int[] landerXS = {11,13,27,29,30,26,37,40,40,30,30,33,24,
-				21,24,16,19, 16, 7, 0, 0,10,10, 3,14,10};
-		int[] landerYS = { 5, 0,0, 5, 20,20,35,35,40,40,35,35,20,
-				20,25,25,20,20,35,35,40,40,35,35,20,20};
-
 		g.setColor(Color.LIGHT_GRAY);
 		g.translate(x, y);
 		g.fillPolygon(landerXS, landerYS, landerYS.length);
@@ -158,25 +162,13 @@ public class LanderCanvas extends JPanel {
 	 * Returns whether or not the ship intersects with the ground.
 	 * @return
 	 */
-	public boolean hitGround() {
-		//return ground.contains();
-		
-		//Variables for simple bounding box
-		int minX = 0;
-		int minY = 0;
-		int maxX = 40;
-		int maxY = 40;
-		
-		String message = "You fell over!";
-		//Check if it was on the flat - both feet are at the same Y? then change the message
-		//if(){
-		//	message = "Congratulations, you landed safely.";
-		//}
-		
-		
-		int r = JOptionPane.showConfirmDialog(this, new JLabel(message ),
-				"Warning!", JOptionPane.YES_NO_CANCEL_OPTION,
-				JOptionPane.WARNING_MESSAGE);
+	public boolean hitGround() {		
+		//If any points on the feet are contained within the polygon, you have landed.
+		for(int i = 0; i < landerXS.length; ++i ){
+			if(ground.contains(landerXS[i] + x, landerYS[i] + y-2)){
+				return true;
+			}
+		}
 		return false;
 	}
 
@@ -184,7 +176,4 @@ public class LanderCanvas extends JPanel {
 		this.thrusting = bool;
 
 	}
-
-
-
 }
